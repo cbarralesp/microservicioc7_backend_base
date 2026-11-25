@@ -1,0 +1,34 @@
+server:
+  port: ${PORT:${SERVER_PORT:8088}}     # Render entrega el puerto en la variable PORT
+
+spring:
+  application:
+    name: resena-service
+  data:
+    mongodb:
+      # Cada microservicio tiene SU PROPIA base: este solo conoce resena_db.
+      # La base y la colección se crean solas al guardar el primer documento.
+      # serverSelectionTimeoutMS: si MongoDB no responde, falla a los 5 s (por defecto son 30).
+      uri: ${MONGODB_URI:mongodb://localhost:27017/resena_db?serverSelectionTimeoutMS=5000}
+
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:4204}
+  producto-service:
+    # En la nube: la URL pública de producto-service en Render
+    url: ${PRODUCTO_SERVICE_URL:http://localhost:8086}
+    timeout-ms: ${PRODUCTO_SERVICE_TIMEOUT_MS:5000}
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  level:
+    root: INFO
+    cl.ipss: ${LOG_LEVEL_APP:INFO}
+
+# Health check para Render: GET /actuator/health (queda DOWN si MongoDB no responde)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

@@ -95,6 +95,10 @@ cd producto-service
 
 Swagger: http://localhost:8086/swagger-ui/index.html
 
+## Extra: resena-service (MongoDB)
+
+Tercer microservicio, ya terminado: guarda reseñas en MongoDB (puerto 8088) y consulta a `producto-service` si el producto existe. Necesita MongoDB aparte de PostgreSQL. Instalación y pruebas en [resena-service/README.md](resena-service/README.md).
+
 ## 🚩 Aquí comenzamos a completar `pedido-service`
 
 1. **TODO 1** · `src/main/resources/application.yml`: URL y timeout para comunicarse con `producto-service`

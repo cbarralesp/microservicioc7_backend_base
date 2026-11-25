@@ -55,7 +55,7 @@ public class Pedido {
         this.nombreProducto = b.nombreProducto;
         this.precioUnitario = b.precioUnitario;
         this.cantidad = b.cantidad;
-        // TODO 2.2: calcular el total = precioUnitario x cantidad (BigDecimal.multiply)
+        this.total = b.precioUnitario.multiply(BigDecimal.valueOf(b.cantidad));   // lo calcula el Builder
     }
 
     public static Builder builder() {
@@ -130,11 +130,18 @@ public class Pedido {
 
         /** Valida y construye; el total se calcula dentro del constructor privado. */
         public Pedido build() {
-            // TODO 2.1: validar con IllegalStateException (mira como lo hace Producto.Builder en producto-service):
-            //   - productoId obligatorio              "El producto del pedido es obligatorio"
-            //   - nombreProducto no vacío             "El nombre del producto es obligatorio"
-            //   - precioUnitario mayor a 0            "El precio unitario debe ser mayor a 0"
-            //   - cantidad al menos 1                 "La cantidad debe ser al menos 1"
+            if (productoId == null) {
+                throw new IllegalStateException("El producto del pedido es obligatorio");
+            }
+            if (nombreProducto == null || nombreProducto.isBlank()) {
+                throw new IllegalStateException("El nombre del producto es obligatorio");
+            }
+            if (precioUnitario == null || precioUnitario.signum() <= 0) {
+                throw new IllegalStateException("El precio unitario debe ser mayor a 0");
+            }
+            if (cantidad < 1) {
+                throw new IllegalStateException("La cantidad debe ser al menos 1");
+            }
             return new Pedido(this);
         }
     }

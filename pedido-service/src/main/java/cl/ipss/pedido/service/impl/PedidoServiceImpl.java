@@ -48,9 +48,20 @@ public class PedidoServiceImpl implements PedidoService {
         ProductoRemoto producto = productoClient.obtenerProducto(request.productoId());
 
         // TODO 3.1: si producto.stock() < request.cantidad() -> lanzar StockInsuficienteException(producto.id())
+        if (producto.stock() < request.cantidad()) {
+        	throw new StockInsuficienteException(producto.id());
+        }
         // TODO 3.2: descontar el stock en producto-service con productoClient.descontarStock(...)
+        	productoClient.descontarStock(producto.id(), request.cantidad());
         // TODO 3.3: construir el Pedido con Pedido.builder() (productoId, nombreProducto, precioUnitario, cantidad)
         // TODO 3.4: guardar con repository.save(...) y devolver mapper.aResponse(...)
-        throw new UnsupportedOperationException("TODO 3: terminar PedidoServiceImpl.crear");
+       Pedido pedido = Pedido.builder()
+    		   .productoId(producto.id())
+    		   .nombreProducto(producto.nombre())
+    		   .precioUnitario(producto.precio())
+    		   .cantidad(request.cantidad())
+    		   .build();
+       	return mapper.aResponse(repository.save(pedido));
+       
     }
 }
