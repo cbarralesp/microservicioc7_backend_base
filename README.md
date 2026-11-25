@@ -34,6 +34,17 @@ BEGIN
     END IF;
 END
 $$;
+
+-- ================= BLOQUE 2 · permisos (base: producto_db) =================
+ALTER DATABASE producto_db OWNER TO producto;
+GRANT ALL PRIVILEGES ON DATABASE producto_db TO producto;
+-- Desde PostgreSQL 15 el esquema public ya no es escribible por cualquiera: sin esto Flyway falla.
+GRANT ALL ON SCHEMA public TO producto;
+
+-- ================= BLOQUE 3 · permisos (base: pedido_db) =================
+ALTER DATABASE pedido_db OWNER TO pedido;
+GRANT ALL PRIVILEGES ON DATABASE pedido_db TO pedido;
+GRANT ALL ON SCHEMA public TO pedido;
 ```
 
 ### 2. Crear las bases a mano
