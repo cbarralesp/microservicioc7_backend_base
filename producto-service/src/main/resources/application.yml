@@ -1,0 +1,36 @@
+server:
+  port: ${PORT:${SERVER_PORT:8086}}     # Render entrega el puerto en la variable PORT
+
+spring:
+  application:
+    name: producto-service
+  datasource:
+    # Cada microservicio tiene SU PROPIA base de datos: este solo conoce producto_db
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:producto_db}?sslmode=${DB_SSL_MODE:prefer}
+    username: ${DB_USER:producto}
+    password: ${DB_PASSWORD:producto}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate      # el esquema lo crea Flyway, Hibernate solo lo valida
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:4204}
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  level:
+    root: INFO
+    cl.ipss: ${LOG_LEVEL_APP:INFO}
+
+# Health check: GET /actuator/health
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

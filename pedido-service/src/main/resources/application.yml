@@ -1,0 +1,41 @@
+server:
+  port: ${PORT:${SERVER_PORT:8087}}     # Render entrega el puerto en la variable PORT
+
+spring:
+  application:
+    name: pedido-service
+  datasource:
+    # Cada microservicio tiene SU PROPIA base de datos: este solo conoce pedido_db
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:pedido_db}?sslmode=${DB_SSL_MODE:prefer}
+    username: ${DB_USER:pedido}
+    password: ${DB_PASSWORD:pedido}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate      # el esquema lo crea Flyway, Hibernate solo lo valida
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+app:
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:4204}
+  # TODO 1: configurar la comunicación con producto-service. Sin esto la aplicación NO arranca.
+  #   Agregar aquí (con la misma sangría que "cors") la clave "producto-service" con:
+  #     url        -> variable PRODUCTO_SERVICE_URL, por defecto la dirección local de producto-service
+  #     timeout-ms -> variable PRODUCTO_SERVICE_TIMEOUT_MS, por defecto 5 segundos (en milisegundos)
+  #   Pista: mira cómo está escrito "cors" arriba y cómo lee estas claves RestClientConfig.
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log
+  level:
+    root: INFO
+    cl.ipss: ${LOG_LEVEL_APP:INFO}
+
+# Health check para Render: GET /actuator/health
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
